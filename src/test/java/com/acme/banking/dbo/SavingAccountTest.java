@@ -5,8 +5,11 @@ import com.acme.banking.dbo.domain.Client;
 import com.acme.banking.dbo.domain.SavingAccount;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 public class SavingAccountTest {
 
@@ -22,30 +25,6 @@ public class SavingAccountTest {
                 .hasFieldOrPropertyWithValue("id", id)
                 .hasFieldOrPropertyWithValue("client", client)
                 .hasFieldOrPropertyWithValue("amount", amount);
-    }
-
-    @Test
-    public void shouldSaveAccountWhenValid() {
-        //given
-        Account account = createSavingAccount();
-        Client client = createClient();
-
-        //when
-        client.saveAccount(account);
-
-        //then
-        assertAll("Client has account, account has client",
-                () -> assertTrue(client.getAccounts().contains(account)),
-                () -> assertEquals(client.getId(), account.getClient().getId())
-        );
-    }
-
-    @Test
-    public void shouldNotSaveAccountWhenAccountInvalid() {
-        Account invalidAccount = null;
-        Client dummyClient = createClient();
-
-        assertThrows(IllegalArgumentException.class, () -> dummyClient.saveAccount(invalidAccount));
     }
 
     @Test
@@ -78,14 +57,6 @@ public class SavingAccountTest {
         int dummyId = 1;
         String dummyName = "dummyName";
         return new Client(dummyId, dummyName);
-    }
-
-    private Account createSavingAccount() {
-        int dummyId = 1;
-        Client dummyClient = createClient();
-        double dummyAmount = 1.0;
-
-        return new SavingAccount(dummyId, dummyClient, dummyAmount);
     }
 }
 

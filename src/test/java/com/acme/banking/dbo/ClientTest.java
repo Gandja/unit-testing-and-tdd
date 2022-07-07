@@ -1,11 +1,14 @@
 package com.acme.banking.dbo;
 
+import com.acme.banking.dbo.domain.Account;
 import com.acme.banking.dbo.domain.Client;
+import com.acme.banking.dbo.domain.SavingAccount;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.*;
@@ -13,6 +16,7 @@ import static org.junit.jupiter.api.Assumptions.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
+import static org.mockito.Mockito.*;
 
 
 @DisplayName("Test suite")
@@ -28,7 +32,7 @@ public class ClientTest {
 
         //region when
         Client sut = new Client(clientId, clientName);
-        assumeTrue(sut != null);
+        assumeTrue(sut != null); //спросить зачем
         //endregion
 
         //region then
@@ -77,5 +81,40 @@ public class ClientTest {
         String name = null;
 
         assertThrows(IllegalArgumentException.class, () -> new Client(dummyId, name));
+    }
+
+    @Test
+    public void shouldSaveAccountWhenValid() {
+        //given
+        Account stubAccount = mock(SavingAccount.class);
+        Client client = createClient();
+
+        //when
+        when(stubAccount.getClient()).thenReturn(client);
+
+        client.saveAccount(stubAccount);
+
+        //then
+        assertAll("Client has account, account has client",
+                () -> assertTrue(client.getAccounts().contains(stubAccount)),
+                () -> assertEquals(client.getId(), stubAccount.getClient().getId())
+        );
+    }
+
+    @Test
+    public void shouldNotSaveAccountWhenAccountInvalid() {
+        Account invalidAccount = null;
+        Client stubClient = mock(Client.class);
+
+        when(stubClient.saveAccount(invalidAccount))
+                .thenThrow(IllegalArgumentException.class);
+
+        assertThrows(IllegalArgumentException.class, () -> stubClient.saveAccount(invalidAccount));
+    }
+
+    private Client createClient() {
+        int dummyId = 1;
+        String dummyName = "dummyName";
+        return new Client(dummyId, dummyName);
     }
 }

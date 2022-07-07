@@ -24,12 +24,13 @@ public class Client {
         return name;
     }
 
-    public void saveAccount(Account account) {
+    public Account saveAccount(Account account) {
         if (account == null) {
             throw new IllegalArgumentException();
         }
         account.setClient(this);
         this.accounts.add(account);
+        return account;
     }
 
     public Collection<Account> getAccounts() {
