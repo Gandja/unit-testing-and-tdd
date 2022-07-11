@@ -3,6 +3,8 @@ package com.acme.banking.dbo;
 import com.acme.banking.dbo.domain.Account;
 import com.acme.banking.dbo.domain.Client;
 import com.acme.banking.dbo.domain.SavingAccount;
+import lombok.Builder;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +23,7 @@ import static org.mockito.Mockito.*;
 
 @DisplayName("Test suite")
 public class ClientTest {
+
     @Test
     @Disabled("temporary disabled")
     @DisplayName("Test case")
@@ -105,6 +108,7 @@ public class ClientTest {
     public void shouldNotSaveAccountWhenAccountInvalid() {
         Account invalidAccount = null;
         Client stubClient = mock(Client.class);
+
 
         when(stubClient.saveAccount(invalidAccount))
                 .thenThrow(IllegalArgumentException.class);
